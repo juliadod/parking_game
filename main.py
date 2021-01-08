@@ -44,17 +44,26 @@ pygame.display.set_caption("Парковка")
 clock = pygame.time.Clock()
 
 interface = Interface()
+interface.recalculate(size)
 
 done = False
 while not done:
     clock.tick(60)
 
-    mouse = pygame.mouse.get_pressed()
-
-    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
+elif event.type == pygame.MOUSEBUTTONDOWN:
+            if car.rect.collidepoint(event.pos):
+                selected_car = car  # нажимаем кнопку мыши - выбирается машина
+        elif event.type == pygame.MOUSEBUTTONUP:
+            selected_car = None  # Отпускаем кнопку мыши - выбранной машины нет
+        elif event.type == pygame.MOUSEMOTION:
+            if selected_car is not None:  # машина выбрана
+                if event.buttons[0]:  # левая кнопка мыши нажата
+                    # двигаем машинку
+                    selected_car.rect.x += event.rel[0]
+                    selected_car.rect.y += event.rel[1]
 
         if event.type == pygame.VIDEORESIZE:
             width, height = event.size

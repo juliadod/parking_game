@@ -1,6 +1,7 @@
-GREY    =   ( 54,  53,  53);      GREY_SH    =   ( 46,  46,  46);       GREY_LT    =   ( 84,  84,  84);        VERY_GREY = ( 32,  32,  32)
-BLACK   =   ( 31,  31,  31);      BLACK_SH   =   ( 24,  24,  24);       BLACK_LT   =   ( 57,  57,  57)
+GREY_LT   =   ( 169, 169, 169);
+GREEN_LT = (0, 255, 127 )  GREEN = (0, 128, 0);
+YELLOW = (250, 250, 210);
 
-
-GREY_PACK    =  [GREY     , GREY_SH     , GREY_LT    ]
-BLACK_PACK   =  [BLACK    , BLACK_SH    , BLACK_LT   ]
+GREY_PACK    =  [GREY_LT]
+GREEN_PACK = [GREEN_LT, GREEN]
+YELLOW_PACK = [YELLOW]
