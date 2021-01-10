@@ -1,3 +1,5 @@
+import pygame
+
 from enum import IntEnum
 
 class State(IntEnum):
@@ -14,7 +16,6 @@ class Car:
         self.y      = position[1]
         self.length = length
         self.state  = state
-
 
     @property
     def __dict__(self):

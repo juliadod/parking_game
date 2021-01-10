@@ -3,21 +3,21 @@ import pygame
 
 from car import Car, State
 from level import Level
-from interface import Interface
+from gamePlayInterface import GamePlayInterface
+from levelsInterface import LevelsInterface
 
-car1 = Car("main", state = State.DOWN)
-car2 = Car("car1", [1, 5])
-car3 = Car("car2", [4, 8])
-car4 = Car("car3", length = 3)
-car5 = Car("car4", state = State.UP)
 
-level = Level()
+car1 = Car("car1", [1, 0], 2, 1)
+car2 = Car("car2", [0, 4], 3, 2)
+car3 = Car("car3", [1, 5], 2, 3)
+car4 = Car("car4", [4, 3], 3, 4)
+
+level = Level("Уровень 1", 6, 6)
 
 level.cars.append(car1)
 level.cars.append(car2)
 level.cars.append(car3)
 level.cars.append(car4)
-level.cars.append(car5)
 
 out = open('level.json', 'w')
 
@@ -33,19 +33,22 @@ data = json.loads(raw_data)
 
 loaded_level = Level.loadFromDict(data)
 
-print(json.dumps(vars(loaded_level), indent = 4))
-
 pygame.init()
 
 size = [600, 600]
-screen = pygame.display.set_mode(size, pygame.RESIZABLE, depth = 16)
+screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Парковка")
 
 clock = pygame.time.Clock()
 
-interface = Interface()
-interface.recalculate(size)
 
+levels_interface = LevelsInterface()
+levels_interface.recalculate(size)
+
+game_interface = GamePlayInterface(loaded_level)
+game_interface.recalculate(size)
+
+selected_carView = None
 done = False
 while not done:
     clock.tick(60)
@@ -53,25 +56,49 @@ while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
-elif event.type == pygame.MOUSEBUTTONDOWN:
-            if car.rect.collidepoint(event.pos):
-                selected_car = car  # нажимаем кнопку мыши - выбирается машина
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            selected_carView = game_interface.clickCar(event.pos)
+
         elif event.type == pygame.MOUSEBUTTONUP:
-            selected_car = None  # Отпускаем кнопку мыши - выбранной машины нет
+            selected_carView = None  # Отпускаем кнопку мыши - выбранной машины нет
+
         elif event.type == pygame.MOUSEMOTION:
-            if selected_car is not None:  # машина выбрана
+
+            if selected_carView is not None:  # машина выбрана
                 if event.buttons[0]:  # левая кнопка мыши нажата
                     # двигаем машинку
-                    selected_car.rect.x += event.rel[0]
-                    selected_car.rect.y += event.rel[1]
+                    viewRect = selected_carView.rect
+                    old_rect = viewRect.copy()
 
-        if event.type == pygame.VIDEORESIZE:
-            width, height = event.size
 
-            screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
+                    if selected_carView.state == State.UP or \
+                       selected_carView.state == State.DOWN:
 
-    screen.fill((255, 255, 255))
+                       viewRect.y += event.rel[1]
 
-    interface.draw(screen)
+                    if selected_carView.state == State.RIGHT or \
+                       selected_carView.state == State.LEFT:
+
+                       viewRect.x += event.rel[0]
+
+                    viewRects = game_interface.get_carView_rects()
+
+                    game_field_rect = game_interface.game_field.get_rect()
+
+                    if not game_field_rect.contains(viewRect):
+                        selected_carView.rect = old_rect
+
+                    for rect in viewRects:
+                        if rect != viewRect and \
+                           rect.colliderect(viewRect):
+
+                           selected_carView.rect = old_rect
+
+                           
+
+    screen.fill((0, 0, 0))
+
+    levels_interface.draw(screen)
 
     pygame.display.update()
