@@ -1,4 +1,4 @@
-import pygame
+"""import pygame
 
 from color import *
 from group import Group

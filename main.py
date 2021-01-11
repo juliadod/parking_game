@@ -4,8 +4,9 @@ import pygame
 from car import Car, State
 from level import Level
 from gamePlayInterface import GamePlayInterface
+"""
 from levelsInterface import LevelsInterface
-
+"""
 
 car1 = Car("car1", [1, 0], 2, 1)
 car2 = Car("car2", [0, 4], 3, 2)
@@ -42,9 +43,9 @@ pygame.display.set_caption("Парковка")
 clock = pygame.time.Clock()
 
 
-levels_interface = LevelsInterface()
+"""levels_interface = LevelsInterface()
 levels_interface.recalculate(size)
-
+"""
 game_interface = GamePlayInterface(loaded_level)
 game_interface.recalculate(size)
 
@@ -95,10 +96,10 @@ while not done:
 
                            selected_carView.rect = old_rect
 
-                           
+
 
     screen.fill((0, 0, 0))
 
-    levels_interface.draw(screen)
+    game_interface.draw(screen)
 
     pygame.display.update()
